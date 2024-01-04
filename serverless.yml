@@ -1,0 +1,36 @@
+service: api-sls
+frameworkVersion: "3"
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  memorySize: 512
+
+custom:
+  esbuild:
+    target: node20
+    format: esm
+    minify: true
+    outputFileExtension: .mjs
+
+functions:
+  api:
+    handler: src/functions/hello.handler
+    events:
+      - httpApi:
+          path: /
+          method: GET
+  getUserById:
+    handler: src/functions/getUserById.handler
+    memorySize: 512
+    events:
+      - httpApi:
+          path: /users/{userId}
+          method: GET
